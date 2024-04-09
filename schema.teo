@@ -9,7 +9,7 @@ server {
 
 admin {
   dest: "./admin",
-  host: ""
+  host: .string("")
 }
 
 @identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
@@ -19,6 +19,8 @@ model User {
   id: Int
   @unique @onSet($if($presents, $isEmail)) @identity.id
   email: String
+  @unique @identity.id
+  phoneNo: String
   @writeonly @onSet($presents.bcrypt.salt)
   @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
   password: String
@@ -42,4 +44,20 @@ model Admin {
   include handler identity.identity
 }
 
+model Item {
+  @id @autoIncrement @readonly
+  id: Int
+  @admin.title
+  name: String
+}
+
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
+
+autoseed dataset default {
+  group Admin {
+    record admin {
+      email: "admin@gmail.com",
+      password: "Aa123456"
+    }
+  }
+}

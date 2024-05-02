@@ -9,12 +9,27 @@ server {
 
 admin {
   dest: "./admin",
-  host: .string("")
+  host: .inject("process.env.HOST")
 }
 
 @identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
-@identity.jwtSecret(ENV["JWT_SECRET"]!)
-model User {
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Root {
+  @id @autoIncrement @readonly
+  id: Int
+  @unique @onSet($if($presents, $isEmail)) @identity.id
+  email: String
+  @writeonly @onSet($presents.bcrypt.salt)
+  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
+  password: String
+
+  include handler identity.signIn
+  include handler identity.identity
+}
+
+@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
+@identity.jwtSecret(ENV["JWT_SECRET"]!) @admin.administrator
+model Admin {
   @id @autoIncrement @readonly
   id: Int
   @unique @onSet($if($presents, $isEmail)) @identity.id
@@ -29,26 +44,30 @@ model User {
   include handler identity.identity
 }
 
-@identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
-@identity.jwtSecret(ENV["JWT_SECRET"]!)
-model Admin {
-  @id @autoIncrement @readonly
-  id: Int
-  @unique @onSet($if($presents, $isEmail)) @identity.id
-  email: String
-  @writeonly @onSet($presents.bcrypt.salt)
-  @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
-  password: String
-
-  include handler identity.signIn
-  include handler identity.identity
-}
-
 model Item {
   @id @autoIncrement @readonly
   id: Int
   @admin.title
   name: String
+}
+
+model Product {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  stock: Int
+  @foreignKey
+  categoryId: Int
+  @relation(fields: .categoryId, references: .id)
+  category: Category
+}
+
+model Category {
+  @id @autoIncrement @readonly
+  id: Int
+  name: String
+  @relation(fields: .id, references: .categoryId)
+  products: Product[]
 }
 
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]

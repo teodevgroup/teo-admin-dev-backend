@@ -9,7 +9,7 @@ server {
 
 admin {
   dest: "./admin",
-  host: .inject("process.env.HOST")
+  host: .inject("process.env.TEO_HOST")
 }
 
 @identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))

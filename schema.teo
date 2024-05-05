@@ -71,6 +71,18 @@ model Category {
   products: Product[]
 }
 
+model Record {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String
+  bool: Bool
+  int: Int
+  float: Float
+  decimal: Decimal
+  date: Date
+  dateTime: DateTime
+}
+
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
 
 autoseed dataset default {
@@ -78,6 +90,12 @@ autoseed dataset default {
     record admin {
       email: "admin@gmail.com",
       phoneNo: "13588888888",
+      password: "Aa123456"
+    }
+  }
+  group Root {
+    record root {
+      email: "root@gmail.com",
       password: "Aa123456"
     }
   }

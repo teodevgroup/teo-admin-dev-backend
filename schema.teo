@@ -9,7 +9,8 @@ server {
 
 admin {
   dest: "./admin",
-  host: .inject("process.env.TEO_HOST")
+  host: .inject("process.env.TEO_HOST"),
+  languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
 }
 
 @identity.tokenIssuer($identity.jwt(expired: 3600 * 24 * 365))
@@ -19,7 +20,7 @@ model Root {
   id: Int
   @unique @onSet($if($presents, $isEmail)) @identity.id
   email: String
-  @writeonly @onSet($presents.bcrypt.salt)
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
   @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
   password: String
 
@@ -36,7 +37,7 @@ model Admin {
   email: String
   @unique @identity.id
   phoneNo: String
-  @writeonly @onSet($presents.bcrypt.salt)
+  @writeonly @onSet($presents.bcrypt.salt) @admin.secureInput
   @identity.checker($get(.value).presents.bcrypt.verify($self.get(.password).presents))
   password: String
 
@@ -76,6 +77,7 @@ autoseed dataset default {
   group Admin {
     record admin {
       email: "admin@gmail.com",
+      phoneNo: "13588888888",
       password: "Aa123456"
     }
   }

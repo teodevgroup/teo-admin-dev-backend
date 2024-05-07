@@ -8,7 +8,7 @@ server {
 }
 
 admin {
-  dest: "./admin",
+  dest: "../teo-admin-dev",
   host: .inject("process.env.TEO_HOST"),
   languages: [.enUs, .enUk, .de, .es, .fr, .he, .hi, .ja, .ko, .zhCn, .zhTw]
 }
@@ -71,6 +71,11 @@ model Category {
   products: Product[]
 }
 
+enum Sex {
+  male
+  female
+}
+
 model Record {
   @id @autoIncrement @readonly
   id: Int
@@ -81,6 +86,7 @@ model Record {
   decimal: Decimal
   date: Date
   dateTime: DateTime
+  sex: Sex
 }
 
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]

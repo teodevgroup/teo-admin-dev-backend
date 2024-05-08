@@ -1,6 +1,15 @@
 connector {
-  provider: .sqlite,
-  url: "sqlite:./database.sqlite"
+  // SQLite
+  // provider: .sqlite,
+  // url: "sqlite:./database.sqlite",
+
+  // MySQL
+  // provider: .mysql,
+  // url: "mysql://localhost:3306/adminbackend",
+
+  // PostgreSQL
+  provider: .postgres,
+  url: "postgres://localhost:5432/adminbackendnew",
 }
 
 server {
@@ -87,6 +96,8 @@ model Record {
   date: Date
   dateTime: DateTime
   sex: Sex
+  strings: String[]
+  genders: Sex[]
 }
 
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]

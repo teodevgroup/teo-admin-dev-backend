@@ -9,7 +9,7 @@ connector {
 
   // PostgreSQL
   provider: .postgres,
-  url: "postgres://localhost:5432/adminbackendnew",
+  url: "postgres://localhost:5432/adminbackend4",
 }
 
 server {

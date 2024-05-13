@@ -100,6 +100,21 @@ model Record {
   genders: Sex[]
 }
 
+model NullableRecord {
+  @id @autoIncrement @readonly
+  id: Int
+  string: String?
+  bool: Bool?
+  int: Int?
+  float: Float?
+  decimal: Decimal?
+  date: Date?
+  dateTime: DateTime?
+  sex: Sex?
+  strings: String[]?
+  genders: Sex?[]?
+}
+
 middlewares [identity.identityFromJwt(secret: ENV["JWT_SECRET"]!)]
 
 autoseed dataset default {

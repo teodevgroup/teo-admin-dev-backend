@@ -16,6 +16,13 @@ server {
   bind: ("0.0.0.0", 5052)
 }
 
+client {
+  provider: .kotlin,
+  dest: "../teo-admin-dev-client-kotlin",
+  host: .string("http://localhost:5052"),
+  package: true,
+}
+
 admin {
   dest: "../teo-admin-dev",
   host: .inject("process.env.TEO_HOST"),

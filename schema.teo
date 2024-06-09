@@ -24,7 +24,7 @@ client kotlin {
 }
 
 client swift {
-  provider: .kotlin,
+  provider: .swift,
   dest: "../teo-admin-dev-client-swift",
   host: .string("http://localhost:5052"),
   package: true,
